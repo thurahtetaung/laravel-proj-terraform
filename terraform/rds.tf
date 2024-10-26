@@ -30,7 +30,7 @@ resource "aws_rds_cluster" "db_cluster" {
   engine                          = "aurora-mysql"
   engine_mode                     = "provisioned"
   engine_version                  = "${var.db_enginer_version}"
-  database_name                   = "${var.project_name}-${var.environment}"
+  database_name                   = "${var.project_name}"
   master_username                 = "admin"
   master_password                 = var.db_password
   db_subnet_group_name            = aws_db_subnet_group.db_subnet_group.name

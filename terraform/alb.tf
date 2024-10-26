@@ -18,9 +18,10 @@ resource "aws_lb_target_group" "web" {
   vpc_id   = aws_vpc.main.id
 
   health_check {
-    path                = "/health-check"
+    path                = "/"
     healthy_threshold   = 2
     unhealthy_threshold = 10
+    matcher = "200-499"
   }
 }
 
@@ -54,6 +55,22 @@ resource "aws_lb_listener" "web_https" {
       content_type = "text/plain"
       message_body = "Not Found"
       status_code  = "404"
+    }
+  }
+}
+
+resource "aws_lb_listener_rule" "prod-web" {
+  listener_arn = aws_lb_listener.web_https.arn
+  priority     = 1
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.web.arn
+  }
+
+  condition {
+    host_header {
+      values = ["${var.project_domain}"]
     }
   }
 }

@@ -22,10 +22,9 @@ resource "aws_launch_template" "web" {
   network_interfaces {
     associate_public_ip_address = true
     delete_on_termination       = true
+    security_groups = [aws_security_group.web.id]
   }
 
-
-  vpc_security_group_ids = [aws_security_group.web.id]
 
   tag_specifications {
     resource_type = "instance"

@@ -18,22 +18,33 @@ resource "aws_iam_role" "web_role" {
           Service = "ec2.amazonaws.com"
         },
         Action = "sts:AssumeRole"
-      },
-      // s3 access for bucket
+      }
+    ]
+  })
+
+  tags = {
+    Name = "laravel-ec2-role"
+  }
+}
+
+resource "aws_iam_policy" "s3_parameterstore_policy" {
+  name        = "s3-ssm-policy"
+  description = "Policy for S3 and SSM access for Laravel EC2 instances"
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
       {
         Effect = "Allow",
-        Principal = {
-          Service = "ec2.amazonaws.com"
-        },
         Action = "s3:*",
-        Resource = ["arn:aws:s3:::${var.s3_bucket_name}", "arn:aws:s3:::${var.s3_bucket_name}/*", "arn:aws:s3:::${var.code_deploy_bucket_name}", "arn:aws:s3:::${var.code_deploy_bucket_name}/*"]
+        Resource = [
+          "arn:aws:s3:::${var.s3_bucket_name}",
+          "arn:aws:s3:::${var.s3_bucket_name}/*",
+          "arn:aws:s3:::${var.code_deploy_bucket_name}",
+          "arn:aws:s3:::${var.code_deploy_bucket_name}/*"
+        ]
       },
-      // parameter store access
       {
         Effect = "Allow",
-        Principal = {
-          Service = "ec2.amazonaws.com"
-        },
         Action = [
           "ssm:PutParameter",
           "ssm:DeleteParameter",
@@ -43,17 +54,19 @@ resource "aws_iam_role" "web_role" {
           "ssm:DescribeParameters",
           "ssm:GetParameter",
           "ssm:DeleteParameters"
-        ]
+        ],
         Resource = "*"
       }
     ]
   })
-  tags = {
-    Name = "laravel-ec2-role"
-  }
 }
 
-resource aws_iam_role_policy_attachment web_role_attachment {
+resource aws_iam_role_policy_attachment s3_parameterstore_policy_attachment {
+  role       = aws_iam_role.web_role.name
+  policy_arn = aws_iam_policy.s3_parameterstore_policy.arn
+}
+
+resource aws_iam_role_policy_attachment ssminstancecore_policy_attachment {
   role       = aws_iam_role.web_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }

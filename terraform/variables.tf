@@ -22,6 +22,12 @@ variable "project_name" {
   default     = "laravel"
 }
 
+variable "project_domain" {
+  description = "Project domain"
+  type        = string
+  default     = "example.com"
+}
+
 variable "ec2_instance_type" {
   description = "EC2 instance type"
   type        = string
