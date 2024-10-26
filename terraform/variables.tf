@@ -4,6 +4,12 @@ variable "aws_region" {
   default     = "ap-southeast-1"
 }
 
+variable "aws_profile" {
+  description = "AWS profile"
+  type        = string
+  default     = "default"
+}
+
 variable "environment" {
   description = "Environment name"
   type        = string
@@ -28,15 +34,29 @@ variable "ami_id" {
   default = "ami-0866a3c8686eaeeba"
 }
 
+variable "ec2_volume_size" {
+  description = "EC2 volume size"
+  type        = number
+  default     = 30
+
+}
+
 variable "ssh-keypair-name" {
   description = "SSH keypair name"
   type        = string
 }
 
+variable "db_enginer_version" {
+  description = "DB engine version"
+  type        = string
+  default = "8.0.mysql_aurora.3.05.2"
+}
+
 variable "db_instance_class" {
   description = "DB instance class"
   type        = string
-  default     = "db.t3.small"
+  default     = "db.serverless"
+
 }
 
 variable "redis_instance_type" {
@@ -63,13 +83,6 @@ variable "db_publicly_accessible" {
   default     = false
 }
 
-variable "db_storage_size" {
-  description = "DB storage size"
-  type        = number
-  default     = 30
-
-}
-
 variable "db_password" {
   description = "RDS root password"
   type        = string
@@ -91,4 +104,11 @@ variable "s3_bucket_name" {
 variable "s3_bucket_acl" {
   description = "S3 bucket ACL"
   type        = string
+}
+
+variable "code_deploy_bucket_name" {
+  description = "CodeDeploy bucket name"
+  type        = string
+  default     = "my-codedeploy-bucket"
+
 }

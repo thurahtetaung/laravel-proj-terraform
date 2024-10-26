@@ -3,7 +3,7 @@ output "alb_dns_name" {
 }
 
 output "rds_endpoint" {
-  value = aws_db_instance.db.endpoint
+  value = aws_rds_cluster_instance.db_instance[0].endpoint
 }
 
 output "redis_endpoint" {

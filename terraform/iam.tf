@@ -26,8 +26,26 @@ resource "aws_iam_role" "web_role" {
           Service = "ec2.amazonaws.com"
         },
         Action = "s3:*",
-        Resource = ["arn:aws:s3:::${var.s3_bucket_name}", "arn:aws:s3:::${var.s3_bucket_name}/*"]
+        Resource = ["arn:aws:s3:::${var.s3_bucket_name}", "arn:aws:s3:::${var.s3_bucket_name}/*", "arn:aws:s3:::${var.code_deploy_bucket_name}", "arn:aws:s3:::${var.code_deploy_bucket_name}/*"]
       },
+      // parameter store access
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        },
+        Action = [
+          "ssm:PutParameter",
+          "ssm:DeleteParameter",
+          "ssm:GetParameterHistory",
+          "ssm:GetParametersByPath",
+          "ssm:GetParameters",
+          "ssm:DescribeParameters",
+          "ssm:GetParameter",
+          "ssm:DeleteParameters"
+        ]
+        Resource = "*"
+      }
     ]
   })
   tags = {
